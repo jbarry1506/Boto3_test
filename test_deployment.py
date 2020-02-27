@@ -2,7 +2,7 @@ from client_locator import EC2Client
 from ec2.vpc import VPC
 from ec2.ec2 import EC2
 from pprint import pprint
-from . import vars
+import vars
 
 
 def main():
@@ -16,9 +16,9 @@ def main():
 
     # Add name tag to VPC
     vpc_id = vpc_response['Vpc']['VpcId']
-    vpc.add_name_tag(vpc_id, vpc_name)
+    vpc.add_name_tag(vpc_id, vars.vpc_name)
 
-    print('Added name ' + vpc_name + ' to ' + vpc_id)
+    print('Added name ' + vars.vpc_name + ' to ' + vpc_id)
 
     # Create an IGW
     igw_response = vpc.create_internet_gateway()
@@ -30,7 +30,7 @@ def main():
 
     # Create a Public Subnet
     # Error - public_cidr_block_ip is not defined
-    public_subnet_response = vpc.create_subnet(vpc_id, public_cidr_block_ip) 
+    public_subnet_response = vpc.create_subnet(vpc_id, vars.public_cidr_block_ip) 
 
     public_subnet_id = public_subnet_response['Subnet']['SubnetId']
 
@@ -38,7 +38,7 @@ def main():
 
     # Add name tag to public subnet
     # Error - test2 not defined
-    vpc.add_name_tag(public_subnet_id, test2) 
+    vpc.add_name_tag(public_subnet_id, vars.public_subnet) 
 
     # Create a public route table
     public_route_table_response = vpc.create_public_route_table(vpc_id)
@@ -56,14 +56,14 @@ def main():
 
     # Create a Private Subnet
     # Error - private_cidr_block_ip is not defined
-    private_subnet_response = vpc.create_subnet(vpc_id, private_cidr_block_ip) 
+    private_subnet_response = vpc.create_subnet(vpc_id, vars.private_cidr_block_ip) 
     private_subnet_id = private_subnet_response['Subnet']['SubnetId']
 
     print('Created private subnet ' + private_subnet_id + ' for VPC ' + vpc_id)
 
     # Add name tag to private subnet
     # Error - test1 not defined
-    vpc.add_name_tag(private_subnet_id, test1) 
+    vpc.add_name_tag(private_subnet_id, vars.private_subnet) 
 
 ##################################################################################
 
@@ -71,14 +71,14 @@ def main():
     ec2 = EC2(ec2_client)
 
     # Create a key pair
-    key_pair_response = ec2.create_key_pair(key_pair_name)
+    key_pair_response = ec2.create_key_pair(vars.key_pair_name)
 
-    print('Created Key Pair with name ' + key_pair_name + ':' + str(key_pair_response))
+    print('Created Key Pair with name ' + vars.key_pair_name + ':' + str(key_pair_response))
 
     # Create a Security Group
     public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
     public_security_group_response = ec2.create_security_group(
-        public_security_group_name, public_security_group_description, vpc_id
+        vars.public_security_group_name, public_security_group_description, vpc_id
     )
 
     public_security_group_id = public_security_group_response['GroupId']
@@ -86,7 +86,7 @@ def main():
     # Add Public Access to Security Group
     ec2.add_inbound_rule_to_sg(public_security_group_id)
 
-    print('Added public access rule to Security Group ' + public_security_group_name)
+    print('Added public access rule to Security Group ' + vars.public_security_group_name)
 
     user_data = """#!/bin/bash
                 yum update -y
@@ -97,13 +97,13 @@ def main():
                 """
 
     # Launch a public EC2 Instance
-    ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1, public_security_group_id, public_subnet_id, user_data)
+    ec2.launch_ec2_instance(vars.ami_id, vars.key_pair_name, 1, 1, public_security_group_id, public_subnet_id, user_data)
 
-    print('Launching Public EC2 Instance using AMI ' + ami_id)
+    print('Launching Public EC2 Instance using AMI ' + vars.ami_id)
 
     # Adding another Security Group for Private EC2 Instance
     private_security_group_description = 'Private Security Group for Private Subnet'
-    private_security_group_response = ec2.create_security_group(private_security_group_name,
+    private_security_group_response = ec2.create_security_group(vars.private_security_group_name,
                                                                 private_security_group_description, vpc_id)
 
     private_security_group_id = private_security_group_response['GroupId']
@@ -112,7 +112,7 @@ def main():
     ec2.add_inbound_rule_to_sg(private_security_group_id)
 
     # Launch a private EC2 Instance
-    ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1, private_security_group_id, private_subnet_id, """""")
+    ec2.launch_ec2_instance(vars.ami_id, vars.key_pair_name, 1, 1, private_security_group_id, private_subnet_id, """""")
 
     print('-----------------------------------------------------------------------------------------------------')
 
