@@ -6,7 +6,7 @@ import vars
 
 
 def main():
-    # Create a VPC
+    # Create a VPC -----------------------------------------------------------------
     ec2_client = EC2Client().get_client()
     vpc = VPC(ec2_client)
 
@@ -19,6 +19,7 @@ def main():
     vpc.add_name_tag(vpc_id, vars.vpc_name)
 
     print('Added name ' + vars.vpc_name + ' to ' + vpc_id)
+# ok
 
     # Create an IGW
     igw_response = vpc.create_internet_gateway()
@@ -28,7 +29,7 @@ def main():
     print("Attaching IGW " + igw_id + ' to VPC ' + vpc_id)
     vpc.attach_igw_to_vpc(vpc_id, igw_id)
 
-    # Create a Public Subnet
+    # Create a Public Subnet -----------------------------------------------------------------
     # Error - public_cidr_block_ip is not defined
     public_subnet_response = vpc.create_subnet(vpc_id, vars.public_cidr_block_ip) 
 
@@ -37,10 +38,9 @@ def main():
     print('Subnet created for VPC ' + ' : ' + str(public_subnet_response))
 
     # Add name tag to public subnet
-    # Error - test2 not defined
-    vpc.add_name_tag(public_subnet_id, vars.public_subnet) 
+    vpc.add_name_tag(public_subnet_id, vars.public_subnet_name) 
 
-    # Create a public route table
+    # Create a public route table -----------------------------------------------------------------
     public_route_table_response = vpc.create_public_route_table(vpc_id)
 
     rtb_id = public_route_table_response['RouteTable']['RouteTableId']
@@ -54,16 +54,14 @@ def main():
     # Allow auto-assign public ip addresses for subnet
     vpc.allow_auto_assign_ip_addresses_for_subnet(public_subnet_id)
 
-    # Create a Private Subnet
-    # Error - private_cidr_block_ip is not defined
+    # Create a Private Subnet -----------------------------------------------------------------
     private_subnet_response = vpc.create_subnet(vpc_id, vars.private_cidr_block_ip) 
     private_subnet_id = private_subnet_response['Subnet']['SubnetId']
 
     print('Created private subnet ' + private_subnet_id + ' for VPC ' + vpc_id)
 
     # Add name tag to private subnet
-    # Error - test1 not defined
-    vpc.add_name_tag(private_subnet_id, vars.private_subnet) 
+    vpc.add_name_tag(private_subnet_id, vars.private_subnet_name) 
 
 ##################################################################################
 
