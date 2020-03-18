@@ -1,0 +1,16 @@
+Order of operations
+
+*** USERS SHOULD NOT HAVE THE ABILITY TO CREATE RESOURCES ***
+
+1.  Make sure user is created
+    - if not created
+        - create user
+        - create login profile
+        - add user to appropriate group with the correct policies attached
+    - if created
+        - check all previous conditionals
+        - check to make sure user is active
+        - email login information
+
+2.  Create appropriate resources
+    - 

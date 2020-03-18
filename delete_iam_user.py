@@ -6,7 +6,7 @@ def main():
     iam = boto3.client('iam')
 
     # create new iam user
-    response = iam.create_user(
+    response = iam.delete_user(
         UserName = vars.new_iam_user
     )
     pprint(response)
