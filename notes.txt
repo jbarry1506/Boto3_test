@@ -1,6 +1,18 @@
 Order of operations
 
 *** USERS SHOULD NOT HAVE THE ABILITY TO CREATE RESOURCES ***
+TODO:
+- fix subnet removal
+- add ec2
+    - linux
+    - windows
+- check windows ec2 instance contact
+- remove ec2
+- create custom user group
+- create custom group policy
+- add policy to group
+- email user credentials
+
 
 1.  Make sure user is created
     - if not created
