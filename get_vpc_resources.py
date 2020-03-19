@@ -7,72 +7,119 @@ ec2_resource = boto3.resource('ec2')
 response = ec2_client.describe_vpcs()
 # pprint(response)
 
+"""
+To delete a VPC, it is necessary to handle the following preliminary items
+    # Terminate all instances
+    # Delete all subnets
+    # Delete custom security groups 
+    # and custom route tables
+    # Detach any internet gateways 
+    # or virtual private gateways
+
+This code should get any necessary information for that purpose
+"""
+
 for vpc in response['Vpcs']:
     print(vpc['VpcId'])
-    if vpc['VpcId'] == vars.vpc_id:
+    if vpc['VpcId'] == vars.default_vpc_id:
         print('Found it!')
         vpc_del = ec2_resource.Vpc(vpc['VpcId'])
+
         # describe internet gateways
-        print('------internet gateways------\n')
+        print('\n------internet gateways------')
         for ig in vpc_del.internet_gateways.all():
-            pprint(ig)
+            pprint(ig.id)
+
+        # describe instances
+        print('\n------instances------')
+        for inst in vpc_del.instances.all():
+            # pprint(inst.id)
+            inst_response = ec2_client.describe_instances(
+                InstanceIds = [
+                    inst.id
+                ]
+            )
+            this_instance = inst_response['Reservations'][0]['Instances'][0]
+            print("Device Name: {}".format(this_instance['KeyName']))
+            print("Instance Id: {}".format(this_instance['InstanceId']))
+            print("Device Mappings:")
+            pprint(this_instance['BlockDeviceMappings'])
+            print("Device State: {}".format(this_instance['Monitoring']['State']))
+            print("Image Id: {}".format(this_instance['ImageId']))
+            this_sg_gn = this_instance['SecurityGroups'][0]['GroupName']
+            print("Security Group Name: {}".format(this_sg_gn))
+            this_sg_gid = this_instance['SecurityGroups'][0]['GroupId']
+            print("Security Group Id: {}".format(this_sg_gid))
+            this_instance_state = this_instance['State']['Name']
+            print("Instance State: {}".format(this_instance_state))
+            this_sub = this_instance['SubnetId']
+            print("Subnet: {}".format(this_sub))
+            print("------------------------------------------------------------\n")
+            
 
         # describe subnets
-        print('------subnets------\n')
+        print('\n------subnets------')
         for subnet in vpc_del.subnets.all():
-            pprint(subnet)
+            pprint(subnet.id)
+            subnet_response = ec2_client.describe_subnets(
+                SubnetIds=[
+                    subnet.id
+                ]
+            )
+            # pprint(subnet_response)
+            this_subnet = subnet_response['Subnets'][0]
+            print("Subnet Id: {}".format(this_subnet['SubnetId']))
+            print("Subnet ARN: {}".format(this_subnet['SubnetArn']))
+            print("CIDR Block: {}".format(this_subnet['CidrBlock']))
+            print("State: {}".format(this_subnet['State']))
+            print("-----------------------------------------------------------\n")
 
         # describe route tables
-        print('------route tables------\n')
+        print('\n------route tables------')
         for rt in vpc_del.route_tables.all():
-            pprint(rt)
+            pprint(rt.id)
+
+        # describe security groups
+        print('\n------security groups------')
+        for sg in vpc_del.security_groups.all():
+            pprint(sg.id)
 
         # describe network acls
-        print('------network acls------\n')
+        print('\n------network acls------')
         for nacl in vpc_del.network_acls.all():
-            pprint(nacl)
+            pprint(nacl.id)
 
         # describe vpc peering connections
-        print('------vpc peering connections------\n')
+        print('\n------vpc peering connections------')
         peering_connections_response = ec2_client.describe_vpc_peering_connections()
         for pc in peering_connections_response:
             pprint(pc)
 
         # describe vpc endpoints
-        print('------vpc endpoints------\n')
+        print('\n------vpc endpoints------')
         endpoint_response = ec2_client.describe_vpc_endpoints()
         for ep in endpoint_response:
             pprint(ep)
 
         # describe nat gateways
-        print('------nat gateways------\n')
+        print('\n------nat gateways------')
         nat_gateways_response = ec2_client.describe_nat_gateways()
         for ng in nat_gateways_response:
             pprint(ng)
 
-        # describe security groups
-        print('------security groups------\n')
-        for sg in vpc_del.security_groups.all():
-            pprint(sg)
-
-        # describe instances
-        print('------instances------\n')
-        for inst in vpc_del.instances.all():
-            pprint(inst)
-
         # describe vpn connections
-        print('------vpn connections------\n')
+        print('\n------vpn connections------')
         vpn_connections_response = ec2_client.describe_vpn_connections()
         for vc in vpn_connections_response:
             pprint(vc)
 
         # describe vpn gateways
-        print('------vpn gateways------\n')
+        print('\n------vpn gateways------')
         vpn_gateways_response = ec2_client.describe_vpn_gateways()
         for vg in vpn_gateways_response:
             pprint(vg)
 
         # describe network interfaces
-        print('------network interfaces------\n')
+        print('\n------network interfaces------')
         for ni in vpc_del.network_interfaces.all():
-            pprint(ni)
+            pprint(ni.id)

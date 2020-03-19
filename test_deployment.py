@@ -4,6 +4,8 @@ from ec2.ec2 import EC2
 from pprint import pprint
 import vars
 
+# TODO
+# Define tests for all this code
 
 def main():
     # Create a VPC -----------------------------------------------------------------
