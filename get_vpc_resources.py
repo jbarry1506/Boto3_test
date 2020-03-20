@@ -21,7 +21,7 @@ This code should get any necessary information for that purpose
 
 for vpc in response['Vpcs']:
     print(vpc['VpcId'])
-    if vpc['VpcId'] == vars.default_vpc_id:
+    if vpc['VpcId'] == vars.unknown_vpc_id:
         print('Found it!')
         vpc_del = ec2_resource.Vpc(vpc['VpcId'])
 
@@ -29,6 +29,12 @@ for vpc in response['Vpcs']:
         print('\n------internet gateways------')
         for ig in vpc_del.internet_gateways.all():
             pprint(ig.id)
+            ig_response = ec2_client.describe_internet_gateways(
+                InternetGatewayIds=[
+                    ig.id
+                ]
+            )
+            pprint(ig_response)
 
         # describe instances
         print('\n------instances------')
@@ -134,37 +140,43 @@ for vpc in response['Vpcs']:
             )
             pprint(nacl_response)
 
-        # describe vpc peering connections
-        print('\n------vpc peering connections------')
-        peering_connections_response = ec2_client.describe_vpc_peering_connections()
-        for pc in peering_connections_response:
-            pprint(pc)
+        # # describe vpc peering connections
+        # print('\n------vpc peering connections------')
+        # peering_connections_response = ec2_client.describe_vpc_peering_connections()
+        # for pc in peering_connections_response:
+        #     pprint(pc)
 
-        # describe vpc endpoints
-        print('\n------vpc endpoints------')
-        endpoint_response = ec2_client.describe_vpc_endpoints()
-        for ep in endpoint_response:
-            pprint(ep)
+        # # describe vpc endpoints
+        # print('\n------vpc endpoints------')
+        # endpoint_response = ec2_client.describe_vpc_endpoints()
+        # for ep in endpoint_response:
+        #     pprint(ep)
 
-        # describe nat gateways
-        print('\n------nat gateways------')
-        nat_gateways_response = ec2_client.describe_nat_gateways()
-        for ng in nat_gateways_response:
-            pprint(ng)
+        # # describe nat gateways
+        # print('\n------nat gateways------')
+        # nat_gateways_response = ec2_client.describe_nat_gateways()
+        # for ng in nat_gateways_response:
+        #     pprint(ng)
 
-        # describe vpn connections
-        print('\n------vpn connections------')
-        vpn_connections_response = ec2_client.describe_vpn_connections()
-        for vc in vpn_connections_response:
-            pprint(vc)
+        # # describe vpn connections
+        # print('\n------vpn connections------')
+        # vpn_connections_response = ec2_client.describe_vpn_connections()
+        # for vc in vpn_connections_response:
+        #     pprint(vc)
 
-        # describe vpn gateways
-        print('\n------vpn gateways------')
-        vpn_gateways_response = ec2_client.describe_vpn_gateways()
-        for vg in vpn_gateways_response:
-            pprint(vg)
+        # # describe vpn gateways
+        # print('\n------vpn gateways------')
+        # vpn_gateways_response = ec2_client.describe_vpn_gateways()
+        # for vg in vpn_gateways_response:
+        #     pprint(vg)
 
         # describe network interfaces
         print('\n------network interfaces------')
         for ni in vpc_del.network_interfaces.all():
             pprint(ni.id)
+            ni_response = ec2_client.describe_network_interfaces(
+                NetworkInterfaceIds=[
+                    ni.id
+                ]
+            )
+            pprint(ni_response)
