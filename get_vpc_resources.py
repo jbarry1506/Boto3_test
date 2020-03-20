@@ -40,19 +40,24 @@ for vpc in response['Vpcs']:
                 ]
             )
             this_instance = inst_response['Reservations'][0]['Instances'][0]
+            this_sg_gn = this_instance['SecurityGroups'][0]['GroupName']
+            this_sg_gid = this_instance['SecurityGroups'][0]['GroupId']
+            this_instance_state = this_instance['State']['Name']
+            this_sub = this_instance['SubnetId']
+
+            print("Instance State: {}".format(this_instance_state))
             print("Device Name: {}".format(this_instance['KeyName']))
             print("Instance Id: {}".format(this_instance['InstanceId']))
             print("Device Mappings:")
-            pprint(this_instance['BlockDeviceMappings'])
+            # pprint(this_instance['BlockDeviceMappings'])
+            for bdm in this_instance['BlockDeviceMappings']:
+                print("\tEBS Volume Id: {}".format(bdm['Ebs']['VolumeId']))
+                print("\tEBS Status: {}".format(bdm['Ebs']['Status']))
+                print("\tEBS Delete on Termination: {}".format(bdm['Ebs']['DeleteOnTermination']))
             print("Device State: {}".format(this_instance['Monitoring']['State']))
             print("Image Id: {}".format(this_instance['ImageId']))
-            this_sg_gn = this_instance['SecurityGroups'][0]['GroupName']
             print("Security Group Name: {}".format(this_sg_gn))
-            this_sg_gid = this_instance['SecurityGroups'][0]['GroupId']
             print("Security Group Id: {}".format(this_sg_gid))
-            this_instance_state = this_instance['State']['Name']
-            print("Instance State: {}".format(this_instance_state))
-            this_sub = this_instance['SubnetId']
             print("Subnet: {}".format(this_sub))
             print("------------------------------------------------------------\n")
             
@@ -100,7 +105,13 @@ for vpc in response['Vpcs']:
         print('\n------security groups------')
         for sg in vpc_del.security_groups.all():
             pprint(sg.id)
-
+            sg_response = ec2_client.describe_security_groups(
+                GroupIds=[
+                    sg.id
+                ]
+            )
+            pprint(sg_response)
+            
         # describe network acls
         print('\n------network acls------')
         for nacl in vpc_del.network_acls.all():
