@@ -104,18 +104,35 @@ for vpc in response['Vpcs']:
         # describe security groups
         print('\n------security groups------')
         for sg in vpc_del.security_groups.all():
-            pprint(sg.id)
+            print("\n********* {} **********".format(sg.id))
+            
             sg_response = ec2_client.describe_security_groups(
                 GroupIds=[
                     sg.id
                 ]
             )
-            pprint(sg_response)
-            
+            # pprint(sg_response['SecurityGroups'][0])
+            sgr = sg_response['SecurityGroups'][0]
+            print("Group Name: {}".format(sgr['GroupName']))
+            print("Group Id: {}".format(sgr['GroupId']))
+            print("Description: {}".format(sgr['Description']))
+            for perm in sgr['IpPermissions']:
+                print("\nIp Permissions:")
+                pprint(sgr['IpPermissions'])
+            print("CIDR Ip Ranges: {}".format(sgr['IpPermissionsEgress'][0]['IpRanges'][0]['CidrIp']))
+            # The tags key doesn't appear to be reachable for some reason
+            # print("Tags: {}".format(sgr['Tags']))
+
         # describe network acls
         print('\n------network acls------')
         for nacl in vpc_del.network_acls.all():
             pprint(nacl.id)
+            nacl_response = ec2_client.describe_network_acls(
+                NetworkAclIds=[
+                    nacl.id
+                ]
+            )
+            pprint(nacl_response)
 
         # describe vpc peering connections
         print('\n------vpc peering connections------')
