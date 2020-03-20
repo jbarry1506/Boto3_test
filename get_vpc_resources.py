@@ -77,7 +77,24 @@ for vpc in response['Vpcs']:
         # describe route tables
         print('\n------route tables------')
         for rt in vpc_del.route_tables.all():
-            pprint(rt.id)
+            # pprint(rt.id)
+            rt_response = ec2_client.describe_route_tables(
+                RouteTableIds=[
+                    rt.id
+                ]
+            )
+            this_rt = rt_response['RouteTables'][0]
+            # pprint(this_rt)
+            print("Route Table Id: {}".format(this_rt['RouteTableId']))
+            print("Association State: {}".format(this_rt['Associations'][0]['AssociationState']['State']))
+            print("Route Table Association Id: {}".format(this_rt['Associations'][0]['RouteTableAssociationId']))
+            # can i enumerate the keys in a for loop like this and feed a list 
+            for route in this_rt['Routes']:
+                print("Destination CIDR Block: {}".format(route['DestinationCidrBlock']))
+                print("Gateway Id: {}".format(route['GatewayId']))
+                print("State: {}".format(route['State']))
+                print("************\n")
+            print("-----------------------------------------------------------\n")
 
         # describe security groups
         print('\n------security groups------')
