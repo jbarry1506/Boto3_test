@@ -19,9 +19,15 @@ To delete a VPC, it is necessary to handle the following preliminary items
 This code should get any necessary information for that purpose
 """
 
+# TODO:
+    # turn this into a function module
+    # return variables, lists, or dicts to the vars file for use
+    # build unit tests
+    # get code review
+
 for vpc in response['Vpcs']:
     print(vpc['VpcId'])
-    if vpc['VpcId'] == vars.unknown_vpc_id:
+    if vpc['VpcId'] == vars.norjim_vpc_id:
         print('Found it!')
         vpc_del = ec2_resource.Vpc(vpc['VpcId'])
 
@@ -97,8 +103,19 @@ for vpc in response['Vpcs']:
             this_rt = rt_response['RouteTables'][0]
             # pprint(this_rt)
             print("Route Table Id: {}".format(this_rt['RouteTableId']))
-            print("Association State: {}".format(this_rt['Associations'][0]['AssociationState']['State']))
-            print("Route Table Association Id: {}".format(this_rt['Associations'][0]['RouteTableAssociationId']))
+            # this line threw an error.  out of range - catch that ish!
+                # after catching the error, the state is 'blackhole'
+                # research and handle
+            try:
+                print("Association State: {}".format(this_rt['Associations'][0]['AssociationState']['State']))
+            except:
+                print("The association state is probably not available.")
+                
+            try:
+                print("Route Table Association Id: {}".format(this_rt['Associations'][0]['RouteTableAssociationId']))
+            except:
+                print("The Route Table Association Id isn't there.")
+
             # can i enumerate the keys in a for loop like this and feed a list 
             for route in this_rt['Routes']:
                 print("Destination CIDR Block: {}".format(route['DestinationCidrBlock']))
