@@ -2,8 +2,8 @@ import boto3
 from pprint import pprint
 import vars
 
-ec2_client = boto3.client('ec2')
 ec2_resource = boto3.resource('ec2')
+ec2_client = boto3.client('ec2')
 response = ec2_client.describe_vpcs()
 # pprint(response)
 
@@ -27,7 +27,7 @@ This code should get any necessary information for that purpose
 
 for vpc in response['Vpcs']:
     print(vpc['VpcId'])
-    if vpc['VpcId'] == vars.norjim_vpc_id:
+    if vpc['VpcId'] == vars.unknown_vpc_id:
         print('Found it!')
         vpc_del = ec2_resource.Vpc(vpc['VpcId'])
 
@@ -51,6 +51,7 @@ for vpc in response['Vpcs']:
                     inst.id
                 ]
             )
+            
             this_instance = inst_response['Reservations'][0]['Instances'][0]
             this_sg_gn = this_instance['SecurityGroups'][0]['GroupName']
             this_sg_gid = this_instance['SecurityGroups'][0]['GroupId']

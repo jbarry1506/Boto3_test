@@ -13,8 +13,13 @@ TODO:
 - add policy to group
 - email user credentials
 
+### Make sure to include version number / date on CloudFormation Templates
+1.  Create Identities
+    - Users
+    - Groups
+    - Roles
+    - policies
 
-1.  Make sure user is created
     - if not created
         - create user
         - create login profile
@@ -24,5 +29,41 @@ TODO:
         - check to make sure user is active
         - email login information
 
-2.  Create appropriate resources
-    - 
+2.  Create appropriate base network resources
+    - VPCs
+    - Internet Gateways
+    - Subnets
+    - Route Tables
+    - VPNs 
+    - etc.
+
+3. Create Shared Services
+    - Content Resource Management
+    - Databases
+    - Monitoring
+    - Security Groups
+    - Subnets
+
+4. Create Backend Services
+    - login
+    - Search
+    - Payments
+    - Reviews
+
+5. Create Frontend Services
+    - Consumer website
+    - seller website
+    - mobile Backend
+
+6. Create SNS notifications with information
+
+7. Validate CloudFormation Templates
+    - version numbers
+    - parammeter types
+        - parameters remove hardcoded values
+    - Mappings
+    - Deletion policies
+    - iam and tags
+    - check for circular dependencies
+    - ValidateTemplate API or Terraform
+    
