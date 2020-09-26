@@ -111,9 +111,9 @@ def vpc_cleanup(vpcid):
     print("Deleting VPC {}".format(vpcid))
     try:
         ec2client.delete_vpc(VpcId=vpcid)
-    except:
+    except Exception as e:
         print('VPC DELETE FAILED!')
-        pprint(ec2client._exception_[1]['args'])
+        pprint(e)
         pprint(ec2client._exception_[1]['operation_name'])
         exit(1)
 
