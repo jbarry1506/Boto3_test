@@ -6,7 +6,11 @@ class EC2:
         """ :type : pyboto3.ec2 """
 
     def create_key_pair(self, key_name):
-        return self._client.create_key_pair(KeyName=key_name)
+        try:
+            return self._client.create_key_pair(KeyName=key_name)
+        except Exception as e:
+            print(e)
+            print("A key pair with that name could not be created")
 
     def create_security_group(self, group_name, description, vpc_id):
         print('Creating a Security Group with name ' + group_name + ' for VPC ' + vpc_id)

@@ -23,6 +23,8 @@ def vpc_cleanup(vpcid):
 
     :param vpcid: id of vpc to delete
     """
+# THIS SCRIPT CURRENTLY HAS TO BE RUN TWICE TO COMPLETE THE DELETION OF THE VPC
+# IT FAILS ON FIRST ATTEMPT
 
     # TODO:  Throw a valid error here
     if not vpcid:
@@ -111,12 +113,12 @@ def vpc_cleanup(vpcid):
         ec2client.delete_vpc(VpcId=vpcid)
     except:
         print('VPC DELETE FAILED!')
-        pprint(ec2client.__exception__[1]['args'])
-        pprint(ec2client.__exception__[1]['operation_name'])
+        pprint(ec2client._exception_[1]['args'])
+        pprint(ec2client._exception_[1]['operation_name'])
         exit(1)
 
 def main():
-    vpc_id = vars.unknown_vpc_id
+    vpc_id = vars.norjim_vpc_id
     vpc_cleanup(vpc_id)
 
 

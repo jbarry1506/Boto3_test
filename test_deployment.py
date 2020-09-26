@@ -71,9 +71,12 @@ def main():
     ec2 = EC2(ec2_client)
 
     # Create a key pair
-    key_pair_response = ec2.create_key_pair(vars.key_pair_name)
-
-    print('Created Key Pair with name ' + vars.key_pair_name + ':' + str(key_pair_response))
+    try:
+        key_pair_response = ec2.create_key_pair(vars.key_pair_name)
+        print('Created Key Pair with name ' + vars.key_pair_name + ':' + str(key_pair_response))
+    except Exception as e:
+        print(e)
+        print("Unable to create key pair.")
 
     # Create a Security Group
     public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
