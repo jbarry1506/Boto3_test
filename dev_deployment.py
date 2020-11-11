@@ -4,6 +4,16 @@ from ec2.ec2 import EC2
 from pprint import pprint
 import vars_dev
 
+"""
+Make sure to check the current AWS_PROFILE
+    echo $AWS_PROFILE
+set the profile with:
+    export AWS_PROFILE=<profile_name>
+Also, make sure the configuration is for the region intended
+    cd <.aws directory>
+    cat config
+"""
+
 # TODO
 # Define tests for all this code
 

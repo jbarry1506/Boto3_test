@@ -3,9 +3,12 @@
 import sys
 import boto3
 from pprint import pprint
-import vars
+import vars_dev
 
 """
+THIS CODE NEEDS TO BE FIXED FOR AWS CLI 2 AND NEW BOTO3 TO TERMINATE EC2 INSTANCES
+https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html
+
 To delete a VPC, it is necessary to handle the following preliminary items
     # Terminate all instances
     # Delete all subnets
@@ -118,7 +121,7 @@ def vpc_cleanup(vpcid):
         exit(1)
 
 def main():
-    vpc_id = vars.jim_dev_vpc
+    vpc_id = vars_dev.dev_vpc_id
     vpc_cleanup(vpc_id)
 
 
